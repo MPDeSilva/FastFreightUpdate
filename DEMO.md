@@ -7,23 +7,40 @@ SQLite + Express + Expo.
 
 ## Prereqs
 
-- **Node 22.5 or newer** (`node --version`). The demo server uses the built-in `node:sqlite` module — no native compile, no Python, no build tools needed.
+- **Node 22 LTS** (specifically `>=22.13 <23`). Node 24 will not work — Expo SDK 51 trips on its stricter ESM resolver. A `.nvmrc` is included.
 - npm 10
 - One of:
   - **iOS Simulator** (Xcode), or
   - **Android Emulator** (Android Studio), or
   - The **Expo Go** app on a physical phone, on the same Wi-Fi as your laptop.
 
-## 1. Install once
+### Installing Node 22 on Windows
 
-```sh
-cd FastFreightUpdate
-npm install
+Use [nvm-windows](https://github.com/coreybutler/nvm-windows/releases) (one-time setup):
+
+```powershell
+# Install nvm-windows from the link above, then:
+nvm install 22.13.0
+nvm use 22.13.0
+node --version   # should print v22.13.0
 ```
 
-> If a previous failed install left `node_modules` in a bad state on Windows,
-> close any editor/terminal that has the folder open, delete `node_modules` and
-> `package-lock.json`, and re-run `npm install`.
+Or download Node 22 LTS directly from <https://nodejs.org/en/download> and uninstall any existing Node 24 first.
+
+## 1. Install once
+
+After confirming `node --version` shows `v22.x`:
+
+```powershell
+cd FastFreightUpdate
+
+# If a previous failed install left node_modules behind, nuke it first.
+# Close VS Code / any explorer windows pointing at the folder before running this.
+rd /s /q node_modules
+del package-lock.json
+
+npm install
+```
 
 ## 2. Start the demo API
 

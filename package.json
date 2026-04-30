@@ -2,6 +2,9 @@
   "name": "fastfreight-update",
   "private": true,
   "version": "0.1.0",
+  "engines": {
+    "node": ">=22.13 <23"
+  },
   "workspaces": [
     "shared",
     "mobile",
