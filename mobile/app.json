@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "FastFreight Update",
+    "slug": "fastfreight-update",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "ffu",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": false,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fastfreight.update",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Scan equipment barcodes and capture audit photos."
+      }
+    },
+    "android": {
+      "package": "com.fastfreight.update",
+      "permissions": ["CAMERA"]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-camera",
+      "expo-sqlite",
+      "expo-secure-store"
+    ],
+    "extra": {
+      "apiBaseUrl": "https://api.example.com",
+      "entra": {
+        "clientId": "REPLACE_WITH_ENTRA_APP_ID",
+        "tenantId": "REPLACE_WITH_TENANT_ID",
+        "scopes": ["api://REPLACE_WITH_API_APP_ID/.default"],
+        "redirectUri": "ffu://auth"
+      }
+    }
+  }
+}

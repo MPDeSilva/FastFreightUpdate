@@ -1,0 +1,16 @@
+{
+  "name": "fastfreight-update",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "shared",
+    "mobile",
+    "api"
+  ],
+  "scripts": {
+    "dev:mobile": "npm --workspace mobile run start",
+    "dev:api": "npm --workspace api run dev",
+    "typecheck": "npm --workspace shared run typecheck && npm --workspace mobile run typecheck && npm --workspace api run typecheck",
+    "test": "npm --workspace mobile test --if-present && npm --workspace api test --if-present"
+  }
+}
