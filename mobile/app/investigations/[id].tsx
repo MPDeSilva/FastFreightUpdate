@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+import Constants from 'expo-constants';
 import { v4 as uuidv4 } from 'uuid';
 import { AuditLog, Investigation } from '@ffu/shared';
 import { SyncStatusBar } from '../../components/SyncStatusBar';
@@ -12,7 +13,8 @@ import {
 import { insertLocalAudit, listAuditsForItem } from '../../src/db/auditLogs';
 import { enqueue } from '../../src/db/syncQueue';
 
-const WORKER_ID = 'worker-local';
+const extra = (Constants.expoConfig?.extra ?? {}) as { demoWorkerId?: string };
+const WORKER_ID = extra.demoWorkerId ?? 'worker-local';
 
 export default function InvestigationDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();

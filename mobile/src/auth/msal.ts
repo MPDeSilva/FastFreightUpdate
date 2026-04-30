@@ -8,13 +8,19 @@ interface EntraConfig {
   redirectUri: string;
 }
 
-const cfg = (Constants.expoConfig?.extra as { entra: EntraConfig }).entra;
+const extra = (Constants.expoConfig?.extra ?? {}) as {
+  entra: EntraConfig;
+  demoMode?: boolean;
+};
+const cfg = extra.entra;
+const DEMO_MODE = !!extra.demoMode;
 const TOKEN_KEY = 'ffu.entra.access_token';
 const EXPIRY_KEY = 'ffu.entra.expires_at';
 
 let inFlight: Promise<string | null> | null = null;
 
 export async function getAccessToken(): Promise<string | null> {
+  if (DEMO_MODE) return 'demo-token';
   if (inFlight) return inFlight;
   inFlight = (async () => {
     const cached = await SecureStore.getItemAsync(TOKEN_KEY);

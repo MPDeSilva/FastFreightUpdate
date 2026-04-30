@@ -25,7 +25,9 @@
       "expo-secure-store"
     ],
     "extra": {
-      "apiBaseUrl": "https://api.example.com",
+      "apiBaseUrl": "http://localhost:3000",
+      "demoMode": true,
+      "demoWorkerId": "demo-worker",
       "entra": {
         "clientId": "REPLACE_WITH_ENTRA_APP_ID",
         "tenantId": "REPLACE_WITH_TENANT_ID",

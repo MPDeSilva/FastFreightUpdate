@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Alert, TextInput } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
+import Constants from 'expo-constants';
 import { v4 as uuidv4 } from 'uuid';
 import { ShipmentStatus } from '@ffu/shared';
 import { SyncStatusBar } from '../../components/SyncStatusBar';
@@ -12,14 +13,16 @@ import { upsertLocalInvestigation } from '../../src/db/investigations';
 import { enqueue } from '../../src/db/syncQueue';
 
 const STATUSES: ShipmentStatus[] = ['Arrived', 'Unpacked', 'Delivered', 'Missing'];
+const extra = (Constants.expoConfig?.extra ?? {}) as { demoWorkerId?: string };
 // In production this comes from the Entra `oid` claim; keep a placeholder until login is wired.
-const WORKER_ID = 'worker-local';
+const WORKER_ID = extra.demoWorkerId ?? 'worker-local';
 
 export default function ScanScreen() {
   const sync = useOfflineSync();
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState<string | null>(null);
   const [shipmentDesc, setShipmentDesc] = useState<string>('');
+  const [manualId, setManualId] = useState<string>('');
 
   useEffect(() => {
     if (permission && !permission.granted) requestPermission();
@@ -109,9 +112,37 @@ export default function ScanScreen() {
       </View>
       <View style={styles.panel}>
         <Text style={styles.scannedText}>
-          {scanned ? `Equipment: ${scanned}` : 'Point camera at a label…'}
+          {scanned ? `Equipment: ${scanned}` : 'Point camera at a label, or type an id below…'}
         </Text>
         {scanned && <Text style={styles.descText}>{shipmentDesc}</Text>}
+        <View style={styles.manualRow}>
+          <TextInput
+            value={manualId}
+            onChangeText={setManualId}
+            placeholder="EQ-1001"
+            autoCapitalize="characters"
+            style={styles.input}
+          />
+          <Pressable
+            style={styles.btn}
+            onPress={() => {
+              if (manualId.trim()) {
+                void onBarcode(manualId.trim());
+                setManualId('');
+              }
+            }}
+          >
+            <Text style={styles.btnText}>Use ID</Text>
+          </Pressable>
+          {scanned && (
+            <Pressable
+              style={[styles.btn, styles.btnGhost]}
+              onPress={() => setScanned(null)}
+            >
+              <Text style={styles.btnText}>Clear</Text>
+            </Pressable>
+          )}
+        </View>
         <View style={styles.row}>
           {STATUSES.map((s) => (
             <Pressable
@@ -143,6 +174,16 @@ const styles = StyleSheet.create({
   scannedText: { fontSize: 16, fontWeight: '600' },
   descText: { color: '#475569' },
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  manualRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    fontSize: 16,
+  },
   btn: {
     backgroundColor: '#0f172a',
     paddingVertical: 10,
