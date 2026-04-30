@@ -3,11 +3,22 @@
  * Equipment IDs are short codes that are easy to type into the manual-entry
  * fallback or encode as QR codes for printing.
  */
-import Database from 'better-sqlite3';
+import { DatabaseSync } from 'node:sqlite';
 import path from 'node:path';
 
 const DB_PATH = process.env.DEMO_DB_PATH ?? path.join(__dirname, '..', 'demo.db');
-const db = new Database(DB_PATH);
+const db = new DatabaseSync(DB_PATH);
+
+// Make sure the table exists (the demo server creates it on boot, but the seed
+// can be run before the server is started).
+db.exec(`
+CREATE TABLE IF NOT EXISTS shipments (
+  equipment_id TEXT PRIMARY KEY NOT NULL,
+  description  TEXT NOT NULL,
+  stand_number TEXT NOT NULL,
+  status       TEXT NOT NULL CHECK (status IN ('Arrived','Unpacked','Delivered','Missing')),
+  updated_at   TEXT NOT NULL
+);`);
 
 const now = new Date().toISOString();
 const samples = [
@@ -33,10 +44,14 @@ const stmt = db.prepare(
      updated_at = excluded.updated_at`
 );
 
-const tx = db.transaction(() => {
+db.exec('BEGIN');
+try {
   for (const s of samples) stmt.run({ ...s, updated_at: now });
-});
-tx();
+  db.exec('COMMIT');
+} catch (e) {
+  db.exec('ROLLBACK');
+  throw e;
+}
 
 console.log(`Seeded ${samples.length} shipments into ${DB_PATH}`);
 console.log('Equipment IDs:');

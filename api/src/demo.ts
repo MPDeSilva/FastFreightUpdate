@@ -7,7 +7,7 @@
  */
 import express from 'express';
 import cors from 'cors';
-import Database from 'better-sqlite3';
+import { DatabaseSync } from 'node:sqlite';
 import path from 'node:path';
 import fs from 'node:fs';
 import { z } from 'zod';
@@ -25,9 +25,9 @@ import {
 const DB_PATH = process.env.DEMO_DB_PATH ?? path.join(__dirname, '..', 'demo.db');
 const PORT = Number(process.env.PORT ?? 3000);
 
-const db = new Database(DB_PATH);
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
+const db = new DatabaseSync(DB_PATH);
+db.exec('PRAGMA journal_mode = WAL');
+db.exec('PRAGMA foreign_keys = ON');
 
 db.exec(`
 CREATE TABLE IF NOT EXISTS shipments (

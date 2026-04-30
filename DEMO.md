@@ -7,7 +7,7 @@ SQLite + Express + Expo.
 
 ## Prereqs
 
-- Node 20 (`node --version`)
+- **Node 22.5 or newer** (`node --version`). The demo server uses the built-in `node:sqlite` module — no native compile, no Python, no build tools needed.
 - npm 10
 - One of:
   - **iOS Simulator** (Xcode), or
@@ -21,7 +21,9 @@ cd FastFreightUpdate
 npm install
 ```
 
-If `better-sqlite3` fails to compile, you need build tools (`xcode-select --install` on macOS, or `apt-get install build-essential python3` on Linux).
+> If a previous failed install left `node_modules` in a bad state on Windows,
+> close any editor/terminal that has the folder open, delete `node_modules` and
+> `package-lock.json`, and re-run `npm install`.
 
 ## 2. Start the demo API
 
