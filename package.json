@@ -16,6 +16,7 @@
     "demo:api": "npm --workspace api run demo",
     "demo:seed": "npm --workspace api run demo:seed",
     "demo:mobile": "npm --workspace mobile run start",
+    "demo:mobile:tunnel": "npm --workspace mobile run tunnel",
     "typecheck": "npm --workspace shared run typecheck && npm --workspace mobile run typecheck && npm --workspace api run typecheck",
     "test": "npm --workspace mobile test --if-present && npm --workspace api test --if-present"
   }
